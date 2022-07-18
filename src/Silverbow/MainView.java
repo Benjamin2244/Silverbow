@@ -85,14 +85,19 @@ public class MainView extends Application {
     }
 
     private void launchApp(ActionEvent event) {
-        String buttonName = ((Text) ((BorderPane) ((HBox) ((Button) event.getSource()).getParent()).getChildren().get(0)).getCenter()).getText();
         try {
-            AppModel app = model.getApp(buttonName);
-            Application runnable_app = app.getApplication().getClass().getDeclaredConstructor().newInstance();
-            runnable_app.start(new Stage());
+            String buttonName = ((Text) ((BorderPane) ((HBox) ((Button) event.getSource()).getParent()).getChildren().get(0)).getCenter()).getText();
+            try {
+                AppModel app = model.getApp(buttonName);
+                Application runnable_app = app.getApplication().getClass().getDeclaredConstructor().newInstance();
+                runnable_app.start(new Stage());
+            }
+            catch (Exception e) {
+                System.out.println("Error");
+            }
         }
         catch (Exception e) {
-            System.out.println("Error");
+            System.out.println("Error: Cannot find name for the app");
         }
     }
 }

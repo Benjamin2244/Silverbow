@@ -4,9 +4,9 @@ import javafx.application.Application;
 
 public class AppModel {
 
-    private String name;
-    private Class app_class;
-    private Application application;
+    private final String name;
+    private final Class app_class;
+    private final Application application;
 
     public AppModel(String input_name, Class input_app_class, Application input_application) {
         name = input_name;
@@ -17,6 +17,8 @@ public class AppModel {
     public String getName() {
         return name;
     }
+
+    public Class getApp_class() { return  app_class; }
 
     public Application getApplication() {
         return application;

@@ -13,7 +13,7 @@ import Noughts_and_Crosses.NoughtsAndCrosses;
 
 public class MainModel {
 
-    private ArrayList<AppModel> apps = new ArrayList<>();
+    private final ArrayList<AppModel> apps = new ArrayList<>();
 
     public void main(String[] args) {
         addApps();
@@ -36,7 +36,7 @@ public class MainModel {
 
     public void addSeeder(int number) {
         for (int i = 0; i < number; i++) {
-            String fake_name = "something";
+            String fake_name = "Demo app " + i;
             addApp(fake_name, SeederApp.class, new SeederApp());
         }
     }
