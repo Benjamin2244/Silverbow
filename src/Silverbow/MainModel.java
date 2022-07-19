@@ -4,6 +4,8 @@ import javafx.application.Application;
 
 // Other
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,5 +52,51 @@ public class MainModel {
         if (filtered_apps.size() == 0) {
             throw new Exception();
         } else {return  filtered_apps.get(0);}
+    }
+
+    public ArrayList<AppModel> getSearchResults(String search) {
+        return new ArrayList<>(getApps().stream().filter(app -> app.getName().toLowerCase().contains(search.toLowerCase())).collect(Collectors.toList()));
+    }
+
+    public ArrayList<AppModel> getAtoZSearch(String search) {
+        ArrayList<AppModel> filteredList = getSearchResults(search);
+        int listSize = filteredList.size();
+        int unorderedSize = listSize;
+        while (unorderedSize > 0) {
+            unorderedSize--;
+            for (int i = 0; i < listSize - 1; i++) {
+                if (isFirstAfterSecondAlphabetical(filteredList, i)) {
+                    AppModel buffer = filteredList.get(i + 1);
+                    filteredList.set(i + 1, filteredList.get(i));
+                    filteredList.set(i, buffer);
+                }
+            }
+        }
+        return filteredList;
+    }
+
+    public ArrayList<AppModel> getZtoASearch(String search) {
+        ArrayList<AppModel> filteredList = getSearchResults(search);
+        int listSize = filteredList.size();
+        int unorderedSize = listSize;
+        while (unorderedSize > 0) {
+            unorderedSize--;
+            for (int i = 0; i < listSize - 1; i++) {
+                if (!isFirstAfterSecondAlphabetical(filteredList, i)) {
+                    AppModel buffer = filteredList.get(i + 1);
+                    filteredList.set(i + 1, filteredList.get(i));
+                    filteredList.set(i, buffer);
+                }
+            }
+        }
+        return filteredList;
+    }
+
+    private boolean isFirstAfterSecondAlphabetical(ArrayList<AppModel> list, int i)
+    {
+        String A = list.get(i).getName();
+        String B = list.get(i+1).getName();
+        int result = A.compareToIgnoreCase(B);
+        return result > 0;
     }
 }

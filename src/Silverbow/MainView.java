@@ -2,11 +2,13 @@ package Silverbow;
 
 // Javafx
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
@@ -19,6 +21,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class MainView extends Application {
@@ -35,6 +38,8 @@ public class MainView extends Application {
     private VBox allApps = new VBox();
     private HBox searchBar = new HBox();
     private TextField searchBarText = new TextField();
+    private ArrayList<String> orderTypes = new ArrayList<>();
+    private ComboBox orderDropDown = new ComboBox();
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -65,19 +70,55 @@ public class MainView extends Application {
     }
 
     private void initialiseSearchBar() {
-        searchBarText.setOnAction(actionEvent -> filterApps(searchBarText.getText()));
+        searchBarText.setOnAction(actionEvent -> filterApps());
         Button searchButton = new Button("Search");
-        searchButton.setOnAction(actionEvent ->  filterApps(searchBarText.getText()));
-        searchBar.getChildren().addAll(searchBarText, searchButton);
+        searchButton.setOnAction(actionEvent ->  filterApps());
+        populateOrderTypes();
+        ObservableList<String> list = FXCollections.observableArrayList(orderTypes);
+        orderDropDown.setItems(list);
+        orderDropDown.setOnAction(actionEvent -> filterApps());
+        searchBar.getChildren().addAll(orderDropDown, searchBarText, searchButton);
         searchBar.setPadding(new Insets(10));
         searchBar.setSpacing(15);
     }
 
-    private void filterApps(String search) {
+    private void populateOrderTypes() {
+        orderTypes.add("AtoZ");
+        orderTypes.add("ZtoA");
+    }
+
+    private boolean orderApps() {
+        String selectedOrder = (String) orderDropDown.getValue();
+        if ("AtoZ".equals(selectedOrder)) {
+            setAtoZOrder();
+        } else if ("ZtoA".equals(selectedOrder)) {
+            setZtoAOrder();
+        } else { return false; }
+        return true;
+    }
+
+    public String getSearchBarText() {
+        return searchBarText.getText();
+    }
+
+    private void filterApps() {
+        if (!orderApps()) {
+            removeApps();
+            ArrayList<AppModel> filteredList = model.getSearchResults(getSearchBarText());
+            filteredList.forEach(app -> addAppToList(allApps, app.getName()));
+        }
+    }
+
+    private void setAtoZOrder() {
         removeApps();
-        ArrayList<AppModel> filteredList = new ArrayList<>(model.getApps().stream().filter(app -> app.getName().toLowerCase().contains(searchBarText.getText().toLowerCase())).collect(Collectors.toList()));
-        filteredList.forEach(app -> System.out.println(app.getName()));
-        filteredList.forEach(app -> addAppToList(allApps, app.getName()));
+        ArrayList<AppModel> orderedList = model.getAtoZSearch(getSearchBarText());
+        orderedList.forEach(app -> addAppToList(allApps, app.getName()));
+    }
+
+    private void setZtoAOrder() {
+        removeApps();
+        ArrayList<AppModel> orderedList = model.getZtoASearch(getSearchBarText());
+        orderedList.forEach(app -> addAppToList(allApps, app.getName()));
     }
 
     private void removeApps() {
