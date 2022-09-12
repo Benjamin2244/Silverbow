@@ -41,16 +41,16 @@ public class MainView extends Application {
     private ArrayList<String> orderTypes = new ArrayList<>();
     private ComboBox orderDropDown = new ComboBox();
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         initialiseApps();
         initialiseRoot();
         initialiseAppViewer();
         initialiseStage(primaryStage);
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 
     private void initialiseApps() {

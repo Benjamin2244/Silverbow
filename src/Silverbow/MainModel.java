@@ -1,5 +1,6 @@
 package Silverbow;
 
+import Noughts_and_Crosses.BoardView;
 import javafx.application.Application;
 
 // Other
@@ -11,7 +12,7 @@ import java.util.stream.Collectors;
 
 // Packages that contain the apps
 import SeederApp.SeederApp;
-import Noughts_and_Crosses.NoughtsAndCrosses;
+import Noughts_and_Crosses.BoardView;
 
 public class MainModel {
 
@@ -27,7 +28,7 @@ public class MainModel {
     // 2: The class
     // 3: An object created from the class
     public void addApps() {
-        addApp("Noughts and Crosses", NoughtsAndCrosses.class, new NoughtsAndCrosses());
+        addApp("Noughts and Crosses", BoardView.class, new BoardView());
         addApp("Silverbow", MainView.class, new MainView());
     }
 
