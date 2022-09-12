@@ -80,6 +80,7 @@ public class MainView extends Application {
         searchBar.getChildren().addAll(orderDropDown, searchBarText, searchButton);
         searchBar.setPadding(new Insets(10));
         searchBar.setSpacing(15);
+        searchBar.setAlignment(Pos.CENTER);
     }
 
     private void populateOrderTypes() {
@@ -146,7 +147,7 @@ public class MainView extends Application {
         HBox appRow = new HBox(appNameContainer, button);
 
         appRow.setPrefHeight(40);
-        appRow.setAlignment(Pos.CENTER_LEFT);
+        appRow.setAlignment(Pos.CENTER);
         allApps.getChildren().add(appRow);
     }
 
