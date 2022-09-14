@@ -21,3 +21,4 @@ Steps for setup:
  - Within Edit Configurations
   - Change the name to soenthing appropriate
   - Silverbow.MainView
+Use this video as a guide: https://youtu.be/Ope4icw6bVk
