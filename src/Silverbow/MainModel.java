@@ -28,7 +28,7 @@ public class MainModel {
     // 2: The class
     // 3: An object created from the class
     public void addApps() {
-        addApp("Noughts and Crosses", BoardView.class, new BoardView());
+        addApp("Noughts and Crosses", Noughts_and_Crosses.MainView.class, new Noughts_and_Crosses.MainView());
         addApp("Silverbow", MainView.class, new MainView());
     }
 

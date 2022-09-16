@@ -7,18 +7,20 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
 
 
-public class BoardView extends Application {
+public class BoardView {
 
     private BoardController controller = new BoardController();
     private BoardModel model = new BoardModel();
@@ -27,18 +29,28 @@ public class BoardView extends Application {
     // Nodes
     private BorderPane board = new BorderPane();
     private BorderPane grid = new BorderPane();
+    private Text currentTurnText = new Text();
+    private ImageView currentTurnImage = new ImageView();
 
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+//    public static void main(String[] args) {
+//        launch(args);
+//    }
+//
+//    @Override
+//    public void start(Stage primaryStage) {
+//        initialiseGrid();
+//        initialiseBoard();
+//        initialiseTiles();
+//        initialiseStage(primaryStage);
+//    }
 
-    @Override
-    public void start(Stage primaryStage) {
+    public BoardView(int boardSize) {
+        model.setBoardSize(boardSize);
         initialiseGrid();
         initialiseBoard();
         initialiseTiles();
-        initialiseStage(primaryStage);
+        initialiseStage(new Stage());
     }
 
     private void initialiseGrid() {
@@ -49,7 +61,7 @@ public class BoardView extends Application {
         for (int i = 0; i < model.getBoardSize(); i++) {
             VBox gridColumn = new VBox();
             for (int j = 0; j < model.getBoardSize(); j++) {
-                Button button = new Button("", createTile(model.getDefaultTileImage()));
+                Button button = new Button("", createLargeTile(model.getDefaultTileImage()));
                 button.setOnAction(this::tileAction);
                 button.setPadding(new Insets(5));
                 gridColumn.getChildren().add(button);
@@ -60,10 +72,25 @@ public class BoardView extends Application {
 
     private void initialiseBoard() {
         board.setCenter(grid);
-        Button button = new Button("Replay");
-        button.setOnAction(this::replay);
-        button.setPadding(new Insets(5));
-        board.setTop(button);
+        Button replaybutton = new Button("Replay");
+        replaybutton.setOnAction(this::replay);
+        replaybutton.setPadding(new Insets(5));
+        Button closeButton = new Button("Close");
+        closeButton.setOnAction(this::close);
+        closeButton.setPadding(new Insets(5));
+        currentTurnText.setText("Current turn: " + model.getWhoseTurnMarker());
+        currentTurnImage = createSmallTile(model.getWhoseTurnPicture());
+        HBox currentTurn = new HBox();
+        currentTurn.getChildren().addAll(currentTurnText, currentTurnImage);
+        board.setTop(currentTurn);
+        HBox buttons = new HBox(replaybutton, closeButton);
+        buttons.setAlignment(Pos.CENTER);
+        board.setBottom(buttons);
+    }
+    private void nextTurn() {
+        model.nextTurn();
+        currentTurnText.setText("Current turn: " + model.getWhoseTurnMarker());
+        currentTurnImage.setImage(model.getWhoseTurnPicture());
     }
 
     private void initialiseStage(Stage primaryStage) {
@@ -77,32 +104,62 @@ public class BoardView extends Application {
         if(!tileExists(event)) {return;}
         Button button = (Button) event.getSource();
         button.setDisable(true);
-        button.setGraphic(createTile(model.getWhoseTurnPicture()));
+        button.setGraphic(createLargeTile(model.getWhoseTurnPicture()));
         Pair location = getTileLocation(button);
         TileModel tile = getTile(location);
         tile.setMarker(model.getWhoseTurnMarker());
+        String lastTurn = model.getWhoseTurnMarker();
+        nextTurn();
         if (!hasWon(location)) {
-            model.nextTurn();
+            if (model.getNumberOfTurns() >= model.getBoardSize() * model.getBoardSize()) {
+                showDraw();
+                replay(event);
+            }
             return;
+        } else {
+            showWinner(lastTurn);
+            replay(event);
         }
-        System.out.println(model.getWhoseTurnMarker() + " have won");
+    }
+
+    private void showWinner(String winner) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Winner!");
-        alert.setHeaderText(model.getWhoseTurnMarker() + " have won");
-        alert.setGraphic(createTile(model.getWhoseTurnPicture()));
+        alert.setHeaderText(winner + " have won");
+        alert.setGraphic(createLargeTile(model.getPictureWithName(winner)));
+        alert.showAndWait();
+    }
+
+    private void showDraw() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Draw!");
+        alert.setHeaderText("It is a draw!");
         alert.showAndWait();
     }
 
     private void replay(ActionEvent event) {
+        model.reset();
         initialiseGrid();
         initialiseBoard();
         initialiseTiles();
     }
 
-    private ImageView createTile(Image image) {
+    private void close(ActionEvent event) {
+        Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+        stage.close();
+    }
+
+    private ImageView createLargeTile(Image image) {
         ImageView imageView = new ImageView(image);
-        imageView.setFitHeight(model.getTileSize());
-        imageView.setFitWidth(model.getTileSize());
+        imageView.setFitHeight(model.getLargeTileSize());
+        imageView.setFitWidth(model.getLargeTileSize());
+        return imageView;
+    }
+
+    private ImageView createSmallTile(Image image) {
+        ImageView imageView = new ImageView(image);
+        imageView.setFitHeight(model.getSmallTileSize());
+        imageView.setFitWidth(model.getSmallTileSize());
         return imageView;
     }
 
@@ -144,9 +201,6 @@ public class BoardView extends Application {
     }
 
     private TileModel getTile(Pair<Integer, Integer> location){
-//        int i = location.getKey();
-//        int j = location.getValue();
-//        return (Button) ((VBox) ((HBox) grid.getCenter()).getChildren().get(i)).getChildren().get(j);
         for (TileModel tile:
              tiles) {
             if(tile.getLocation().equals(location)) return tile;

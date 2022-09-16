@@ -98,9 +98,7 @@ public class MainView extends Application {
         return true;
     }
 
-    public String getSearchBarText() {
-        return searchBarText.getText();
-    }
+    public String getSearchBarText() { return searchBarText.getText(); }
 
     private void filterApps() {
         if (!orderApps()) {

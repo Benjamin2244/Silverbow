@@ -14,9 +14,11 @@ import java.util.stream.Collectors;
 public class BoardModel {
 
     private final ArrayList<AppModel> apps = new ArrayList<>();
-    private final int boardSize = 3;
+    private int boardSize = 3;
     private double sceneSize = 600;
-    private double tileSize = (sceneSize-100)/boardSize;
+    private double largeTileSize = (sceneSize-150)/boardSize;
+    private double smallTileSize = (sceneSize-100)/20;
+    private int numberOfTurns;
     private ArrayList<String> teams = new ArrayList<>();
     private HashMap<String, Image> teamToImage = new HashMap<>();
     private int whoseTurn;
@@ -26,10 +28,14 @@ public class BoardModel {
     private Image crossesImage = new Image("/cross.png");
 
     public BoardModel() {
-        System.out.println("HERE");
         initialiseTeams();
         initialiseTurn();
         initialiseTeamToImage();
+    }
+
+    public void setBoardSize(int boardSizeInput) {
+        boardSize = boardSizeInput;
+        largeTileSize = (sceneSize-150)/boardSize;
     }
 
     private void initialiseTeams(){
@@ -44,18 +50,30 @@ public class BoardModel {
 
     private void initialiseTurn(){
         whoseTurn = 0;
+        numberOfTurns = 0;
+    }
+
+    public void reset(){
+        initialiseTurn();
     }
 
     public void nextTurn(){
+        numberOfTurns += 1;
         whoseTurn += 1;
         if (whoseTurn == teams.size()) whoseTurn = 0;
     }
+
+    public int getNumberOfTurns() { return numberOfTurns; }
 
     public String getWhoseTurnMarker() {
         return teams.get(whoseTurn); }
 
     public Image getWhoseTurnPicture() {
         String player = getWhoseTurnMarker();
+        return teamToImage.get(player);
+    }
+
+    public Image getPictureWithName(String player) {
         return teamToImage.get(player);
     }
 
@@ -69,7 +87,10 @@ public class BoardModel {
         return sceneSize;
     }
 
-    public double getTileSize() {
-        return tileSize;
+    public double getLargeTileSize() {
+        return largeTileSize;
+    }
+    public double getSmallTileSize() {
+        return smallTileSize;
     }
 }
