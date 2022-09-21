@@ -1,16 +1,12 @@
 package Noughts_and_Crosses;
 
-import Silverbow.AppModel;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -19,25 +15,23 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 
-import java.util.ArrayList;
 
 
 public class MainView extends Application {
 
     // Nodes
-    private BorderPane menu = new BorderPane();
-    private StackPane title = new StackPane();
-    private Text titleText = new Text("Noughts and Crosses");
-    private TextField customGameText = new TextField();
-    private HBox customGame = new HBox();
-    private VBox gameChoices = new VBox();
-    private Button customGameButton = new Button("Create");
-    private Text customGameHelp = new Text("Size of board: ");
-    private Button button2x2 = createButton("Play 2x2");
-    private Button button3x3 = createButton("Play 3x3");
-    private Button button4x4 = createButton("Play 4x4");
+    private final BorderPane menu = new BorderPane();
+    private final StackPane title = new StackPane();
+    private final Text titleText = new Text("Noughts and Crosses");
+    private final TextField customGameText = new TextField();
+    private final HBox customGame = new HBox();
+    private final VBox gameChoices = new VBox();
+    private final Button customGameButton = new Button("Create");
+    private final Text customGameHelp = new Text("Size of board: ");
+    private final Button button2x2 = createButton("Play 2x2");
+    private final Button button3x3 = createButton("Play 3x3");
+    private final Button button4x4 = createButton("Play 4x4");
 
 
     public static void main(String[] args) {
@@ -62,8 +56,6 @@ public class MainView extends Application {
         menu.setTop(title);
         initialiseGameChoices();
         menu.setCenter(gameChoices);
-        menu.getCenter().autosize();
-        menu.getTop().autosize();
     }
 
     private void initialiseTitle() {
@@ -100,17 +92,17 @@ public class MainView extends Application {
         customGame.setSpacing(5);
     }
 
-    private void play2x2(ActionEvent event) { BoardView game = new BoardView(2); }
+    private void play2x2(ActionEvent event) { new BoardView(2); }
 
-    private void play3x3(ActionEvent event) { BoardView game = new BoardView(3); }
+    private void play3x3(ActionEvent event) { new BoardView(3); }
 
-    private void play4x4(ActionEvent event) { BoardView game = new BoardView(4); }
+    private void play4x4(ActionEvent event) { new BoardView(4); }
 
     public String getCustomGameText() { return customGameText.getText(); }
 
     private void createCustomGame() {
         if (isValidCustomGame()) {
-            BoardView game = new BoardView(Integer.parseInt(getCustomGameText()));
+            new BoardView(Integer.parseInt(getCustomGameText()));
         }
     }
 
